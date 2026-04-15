@@ -2,7 +2,7 @@ openapi: "3.1.0"
 
 info:
   title: "Spring_ingredient API"
-  description: "Spring_ingredient API"
+  description: "Ceci est le fichier contenant le spécification de Spring_ingredient API"
   version: "1.0.0"
 
 servers:
