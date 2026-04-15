@@ -34,7 +34,6 @@ public class StockMovementRepository {
                     sk.setType(MovementTypeEnum.valueOf(rs.getString("type")));
                     sk.setCreationDatetime(rs.getTimestamp("creation_datetime").toInstant());
 
-
                     StockValue sv = new StockValue();
                     sv.setQuantity(rs.getDouble("quantity"));
                     sv.setUnit(UnitType.valueOf(rs.getString("unit")));

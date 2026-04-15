@@ -40,14 +40,12 @@ public class DishRepository {
             while (rsDish.next()) {
                 Dish dish = new Dish();
                 int dishId = rsDish.getInt("id");
-
                 dish.setId(dishId);
                 dish.setName(rsDish.getString("name"));
                 dish.setDishType(DishTypeEnum.valueOf(rsDish.getString("dish_type")));
                 dish.setSellingPrice(rsDish.getDouble("selling_price"));
-                dish.setDishIngredients(new ArrayList<>());   // important
+                dish.setDishIngredients(new ArrayList<>());
 
-                // Récupération des ingrédients
                 psIng.setInt(1, dishId);
                 try (ResultSet rsIng = psIng.executeQuery()) {
                     while (rsIng.next()) {
@@ -60,8 +58,6 @@ public class DishRepository {
                         DishIngredient di = new DishIngredient();
                         di.setIngredient(ing);
                         di.setQuantityRequired(rsIng.getDouble("quantity_required"));
-                        // di.setDish(dish);   // optionnel mais recommandé pour éviter null
-
                         dish.getDishIngredients().add(di);
                     }
                 }
@@ -78,7 +74,6 @@ public class DishRepository {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, id);
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -89,7 +84,6 @@ public class DishRepository {
                     dish.setDishType(DishTypeEnum.valueOf(rs.getString("dish_type")));
                     dish.setSellingPrice(rs.getDouble("selling_price"));
                     dish.setDishIngredients(new ArrayList<>());
-
                     return dish;
                 }
             }
