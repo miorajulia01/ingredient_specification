@@ -1,0 +1,206 @@
+openapi: "3.1.0"
+
+info:
+  title: "Spring_ingredient API"
+  description: "Spring_ingredient API"
+  version: "1.0.0"
+
+servers:
+  - url: "http://localhost:8080"
+
+paths:
+  /ingredients:
+    get:
+      summary: "GET ingredients"
+      operationId: "getIngredients"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Ingredient"
+
+  /ingredients/{id}:
+    get:
+      summary: "GET ingredients/{id}"
+      operationId: "getIngredientById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ingredient"
+
+  /ingredients/{id}/stock:
+    get:
+      summary: "GET ingredients/{id}/stock"
+      operationId: "getStockValueAt"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "at"
+          in: "query"
+          required: true
+          schema:
+            $ref: "#/components/schemas/Instant"
+        - name: "unit"
+          in: "query"
+          required: true
+          schema:
+            type: "string"
+            enum:
+              - "PC"
+              - "KG"
+              - "L"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StockValue"
+
+  /dishes:
+    get:
+      summary: "GET dishes"
+      operationId: "getAllDishes"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Dish"
+
+  /dishes/{id}:
+    get:
+      summary: "GET dishes/{id}"
+      operationId: "getDishById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dish"
+
+  /dishes/{id}/ingredients:
+    put:
+      summary: "PUT dishes/{id}/ingredients"
+      operationId: "updateDishIngredients"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/DishIngredient"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dish"
+
+components:
+  schemas:
+    Instant:
+      type: "string"
+      format: "date-time"
+
+    StockValue:
+      type: "object"
+      properties:
+        quantity:
+          type: "number"
+          format: "double"
+        unit:
+          type: "string"
+          enum:
+            - "PC"
+            - "KG"
+            - "L"
+
+    Ingredient:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        name:
+          type: "string"
+        category:
+          type: "string"
+        price:
+          type: "number"
+          format: "double"
+
+    DishIngredient:
+      type: "object"
+      properties:
+        ingredient:
+          $ref: "#/components/schemas/Ingredient"
+        quantityRequired:
+          type: "number"
+          format: "double"
+        unit:
+          type: "string"
+          enum:
+            - "PC"
+            - "KG"
+            - "L"
+
+    Dish:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int32"
+        name:
+          type: "string"
+        dishType:
+          type: "string"
+          enum:
+            - "START"
+            - "MAIN"
+            - "DESSERT"
+        sellingPrice:
+          type: "number"
+          format: "double"
+        dishIngredients:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/DishIngredient"
