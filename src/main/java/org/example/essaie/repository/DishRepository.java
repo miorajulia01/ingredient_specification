@@ -21,16 +21,16 @@ public class DishRepository {
 
         String sqlDish = "SELECT id, name, dish_type, selling_price FROM dish ORDER BY id";
         String sqlIngredients = """
-            SELECT di.quantity_required, 
-                   i.id as ingredient_id, 
-                   i.name as ingredient_name, 
-                   i.price as ingredient_price, 
-                   i.category
-            FROM dish_ingredient di
-            JOIN ingredient i ON di.id_ingredient = i.id
-            WHERE di.id_dish = ?
-            ORDER BY i.name
-            """;
+                SELECT di.quantity_required, 
+                       i.id as ingredient_id, 
+                       i.name as ingredient_name, 
+                       i.price as ingredient_price, 
+                       i.category
+                FROM dish_ingredient di
+                JOIN ingredient i ON di.id_ingredient = i.id
+                WHERE di.id_dish = ?
+                ORDER BY i.name
+                """;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement psDish = conn.prepareStatement(sqlDish);
@@ -102,7 +102,7 @@ public class DishRepository {
     @Transactional
     public void updateDishIngredients(Integer dishId, List<DishIngredient> ingredients) {
         String deleteSql = "DELETE FROM dish_ingredient WHERE id_dish = ?";
-        String insertSql = "INSERT INTO dish_ingredient (id_dish, id_ingredient, quantity_required) VALUES (?, ?, ?)";
+        String insertSql = "INSERT INTO dish_ingredient (id_dish, id_ingredient, quantity_required, unit) VALUES (?, ?, ?, ?::unit_type)";
 
         try (Connection conn = dataSource.getConnection()) {
             conn.setAutoCommit(false);
@@ -120,6 +120,8 @@ public class DishRepository {
                                 psInsert.setInt(1, dishId);
                                 psInsert.setInt(2, di.getIngredient().getId());
                                 psInsert.setDouble(3, di.getQuantityRequired());
+                                String unitValue = (di.getUnit() != null) ? di.getUnit().name() : "PCS";
+                                psInsert.setString(4, unitValue);
                                 psInsert.executeUpdate();
                             }
                         }

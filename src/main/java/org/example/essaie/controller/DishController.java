@@ -39,14 +39,14 @@ public class DishController  {
         }
     }
 
-    @PutMapping("/{id}/ingredient")
+    @PutMapping("/{id}/ingredients")
     public ResponseEntity<?> updateDishIngredient(
             @PathVariable Integer id,
             @RequestBody List<DishIngredient> ingredients
     ){
         try{
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(dishService.updateIngredients(id, ingredients));
+            dishService.updateIngredients(id, ingredients);
+            return ResponseEntity.ok("Dish ingredients updated successfully");
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Dish.id=" + id + " is not found");
